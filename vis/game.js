@@ -62,5 +62,24 @@ var game = {
 				--i;
 			}
 		}
+
+		var SIZE=2;
+		var PUSH=1;
+		for(var i=0; i<this.crafts.length; ++i) {
+			for(var j=0; j<i; ++j) {
+				var a = this.crafts[i], b = this.crafts[j];
+				var d = vsub(b.pos, a.pos);
+				if (norm(d) <= SIZE) {
+//					var ato = vsub(a.dest.pos, a.pos);
+//					var bto = vsub(b.dest.pos, b.pos);
+
+					normalize(d);
+					b.pos = ivadd(b.pos, vmul(dt*PUSH, d));
+					a.pos = ivadd(a.pos, vmul(-dt*PUSH, d));
+
+//					a.pos = vadd(a.dest.pos, ivmul(norm(ato)/norm(, ato));
+				}
+			}
+		}
 	}
 };

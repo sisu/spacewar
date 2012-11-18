@@ -83,14 +83,15 @@ function makePlanetTexture() {
 
 		pal0[3*i] = pal0[3*i+1] = pal0[3*i+2] = 128 + 128*.5*(1 + Math.sin(fi));
 
-//		pal1[3*i] = 255 * .5 * (1 + Math.sin(fi));
-		pal1[3*i] = 255;
+		pal1[3*i] = 16 * .5 * (1 + Math.sin(8*fi));
 		pal1[3*i+1] = 300 * .5 * (1 + Math.sin(2*fi));
-		pal1[3*i+2] = 16 * .5 * (1 + Math.sin(8*fi));
+		pal1[3*i+2] = 255;
 
-		pal2[3*i] = 16 * .5 * (1 + Math.sin(8*fi));
+//		pal2[3*i] = 255 * .5 * (1 + Math.sin(fi));
+		pal2[3*i] = 255;
 		pal2[3*i+1] = 300 * .5 * (1 + Math.sin(2*fi));
-		pal2[3*i+2] = 255;
+		pal2[3*i+2] = 16 * .5 * (1 + Math.sin(8*fi));
+
 	}
 	function make(img) {
 		var t = gl.createTexture();
