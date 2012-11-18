@@ -66,14 +66,16 @@ function setLight() {
 	gl.uniform3f(lloc, ldir[0], ldir[1], ldir[2]);
 }
 var plColor = [[.5,.5,.5], [.1,.1,.9], [.9,.1,.1]];
-function drawCraft(u, view) {
-	var pltrans = unitTransM(u);
+function drawCraft(c, view) {
+//	var pltrans = unitTransM(c);
+	var pltrans = translateM(c.pos);
+//	var scale = scaleM(vec3());
 	setTrans(view, pltrans);
 	var cloc = gl.getAttribLocation(prog, 'color');
 	gl.disableVertexAttribArray(cloc);
-	var color = plColor[p.owner];
+	var color = plColor[c.owner];
 	gl.vertexAttrib3f(cloc, color[0], color[1], color[2]);
-	u.model.draw();
+	craftModel.draw();
 }
 function drawPlanet(p, view) {
 	setTrans(view, planetTransM(p));
@@ -86,7 +88,8 @@ function drawPlanet(p, view) {
 
 function draw() {
 	if (planetModel==null) {
-		planetModel = makeCube(1,1,1);
+		planetModel = makeSphere();
+		craftModel = makeCube();
 	}
 	gl.clearColor(0,0,0,1);
 	gl.clear(gl.COLOR_BUFFER_BIT);

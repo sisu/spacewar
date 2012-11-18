@@ -1,3 +1,4 @@
+var GROW_SPEED = 3, MOVE_SPEED = 9;
 var game = {
 	crafts: [],
 //	pressedKeys: [],
@@ -17,7 +18,7 @@ var game = {
 			var dt = (time-this.prevTime)/1000.;
 			this.prevTime = time;
 
-			this.updateMove();
+			this.growPlanets(dt);
 			this.moveCrafts(dt);
 			draw();
 		} catch(err) {
@@ -35,11 +36,31 @@ var game = {
 		this.updateID = null;
 		stopDraw();
 	},
-	updateMove: function() {
+	growPlanets: function(dt) {
+		for(var i=0; i<this.planets.length; ++i) {
+			var p = this.planets[i];
+			if (p.owner!=0) p.population += dt * GROW_SPEED;
+		}
+	},
+	sendCrafts: function(who, from, to, count) {
+		console.log('sending crafts: '+count);
+		for(var i=0; i<count; ++i) {
+			var pos = ivadd(rvec(3), this.planets[from].pos);
+			this.crafts.push(new Craft(pos, this.planets[to], who));
+		}
+		this.planets[from].population -= count;
 	},
 	moveCrafts: function(dt) {
 		for(var i=0; i<this.crafts.length; ++i) {
-//			moveUnit(this.crafts[i], dt, this.area, this.crafts);
+			var c = this.crafts[i];
+			var p = c.dest;
+			var dir = normalized(vsub(p.pos, c.pos));
+			c.pos = ivadd(c.pos, ivmul(dt*MOVE_SPEED, dir));
+			if (norm(vsub(c.pos,p.pos)) <= p.size) {
+				this.crafts[i] = this.crafts.last();
+				this.crafts.pop();
+				--i;
+			}
 		}
 	}
 };

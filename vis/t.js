@@ -66,8 +66,13 @@ function handleMessage(e) {
 //				console.log('setting owner: '+p.owner);
 			}
 		} else if (s[0]=='SEND') {
-			var is = s.map(parseInt);
-			var who = is[1], from = is[2], to = is[3], count = is[4];
+			s.shift();
+//			var is = s.map(parseInt); // fails, chrome bug?
+			var is = s.map(function(x){return parseInt(x);});
+//			console.log(s);
+//			console.log(is);
+			var who = is[0], from = is[1], to = is[2], count = is[3];
+			game.sendCrafts(who, from, to, count);
 		} else {
 			console.log('unknown msg: '+msg);
 		}

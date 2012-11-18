@@ -70,3 +70,10 @@ function normalize(v) {
 function normalized(v) {
 	return vmul(1.0/norm(v), v);
 }
+
+function rvec(n) {
+	r = new Array(n);
+	for(var i=0; i<n; ++i)
+		r[i] = 2*Math.random() - 1;
+	return r;
+}
