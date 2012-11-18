@@ -87,7 +87,7 @@ void genPlanets(int n) {
 		Planet p;
 		p.owner = NONE;
 		p.size = 3*(1+randf());
-		p.population = p.size;
+		p.population = (int)(5*p.size);
 		p.pos = 30.f*rvec();
 		planets.push_back(p);
 		cout<<"planet "<<p.pos<<' '<<p.size<<'\n';
@@ -142,7 +142,7 @@ void readInput(Process& proc, Player pl) {
 		} else if (msg=="SEND") {
 			int from, to, count;
 			iss >> from >> to >> count;
-			cout<<"send "<<pl<<": "<<from<<' '<<to<<' '<<count<<endl;
+//			cout<<"send "<<pl<<": "<<from<<' '<<to<<' '<<count<<endl;
 			Planet& fromP = planets[from];
 			if (fromP.owner == pl) {
 				sendCrafts(fromP, planets[to], count);

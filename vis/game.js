@@ -43,7 +43,7 @@ var game = {
 		}
 	},
 	sendCrafts: function(who, from, to, count) {
-		console.log('sending crafts: '+count);
+//		console.log('sending crafts: '+count);
 		for(var i=0; i<count; ++i) {
 			var pos = ivadd(rvec(3), this.planets[from].pos);
 			this.crafts.push(new Craft(pos, this.planets[to], who));
