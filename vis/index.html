@@ -118,9 +118,11 @@ void main() {
 #ifdef GL_ES
 precision highp float;
 #endif
+uniform sampler2D tex;
 varying vec4 vcolor;
 void main() {
-	gl_FragColor = vcolor;
+	float a = texture2D(tex, gl_PointCoord).a;
+	gl_FragColor = vcolor * vec4(1.,1.,1.,a);
 }
 </script>
 <script id="particle-vs" type="x-shader/x-vertex">

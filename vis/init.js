@@ -1,7 +1,7 @@
 var prog = null;
 var textProg = null, planetProg = null, craftProg = null, particleProg = null;
 var gl = null;
-var textTex = null, planetTex = null;
+var textTex = null, planetTex = null, particleTex = null;
 var palette = [null,null,null];
 
 function makeProg(vs, fs) {
@@ -107,10 +107,25 @@ function makePlanetTexture() {
 		palette[i] = make(imgs[i]);
 }
 function makeParticleTexture() {
+	var s = 128;
+	var img = new Array(s*s);
+	for(var i=0; i<s; ++i) {
+		for(var j=0; j<s; ++j) {
+			var x = j/s-.5, y = i/s-.5;
+			var c = .1/(x*x + y*y) - 1;
+			img[s*i+j] = 255 * Math.max(0, Math.min(1, c));
+		}
+	}
+	particleTex = gl.createTexture();
+	gl.bindTexture(gl.TEXTURE_2D, particleTex);
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.ALPHA, s, s, 0, gl.ALPHA, gl.UNSIGNED_BYTE, new Uint8Array(img));
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 }
 function makeTextures() {
 	makeNumTexture();
 	makePlanetTexture();
+	makeParticleTexture();
 }
 
 /*

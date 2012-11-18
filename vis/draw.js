@@ -123,6 +123,7 @@ function draw() {
 	gl.clear(gl.COLOR_BUFFER_BIT);
 	gl.flush();
 	gl.enable(gl.DEPTH_TEST);
+	gl.disable(gl.BLEND);
 
 	gl.useProgram(planetProg);
 	prog = planetProg;
@@ -168,8 +169,10 @@ function draw() {
 		drawPopulation(game.planets[i], view);
 	}
 
+	gl.enable(gl.DEPTH_TEST);
 	gl.useProgram(particleProg);
 	prog = particleProg;
+	gl.bindTexture(gl.TEXTURE_2D, particleTex);
 	gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'trans'), false, view);
 	drawParticles();
