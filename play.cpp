@@ -148,7 +148,9 @@ void readInput(Process& proc, Player pl) {
 				sendCrafts(fromP, planets[to], count);
 				proc1.send(sendMessage(from, to, count, pl, P1));
 				proc2.send(sendMessage(from, to, count, pl, P2));
-				replayOut << curTime<<' ' << sendMessage(from, to, count, pl, P1);
+				string msg = sendMessage(from, to, count, pl, P1);
+				replayOut << curTime<<' ' << msg;
+				sendToObs(msg);
 			}
 		} else {
 			cerr<<"fail "<<msg<<'\n';
@@ -231,9 +233,15 @@ void runGame() {
 			}
 		}
 	}
+//	cout<<"quitting\n";
 }
 
 int main(int argc, char* argv[]) {
+	// At least chrome doesn't seem to close connections properly so ignoring
+	// broken pipe errors seems to be the only way to avoid crashing after
+	// observer has disconnected.
+	signal(SIGPIPE, SIG_IGN);
+
 	assert(argc==3);
 	if (argv[1]==string("-r")) {
 		replayIn.open(argv[2]);

@@ -134,6 +134,16 @@ bool Connection::read()
 
 void Connection::write(const void* s, int n)
 {
+	fd_set set;
+	FD_ZERO(&set);
+	FD_SET(fd, &set);
+	timeval tv = {0,0};
+	int r = select(1, &set, 0, 0, &tv);
+	assert(r!=-1);
+	assert(r!=EBADF);
+
+	int val = fcntl(fd, F_GETFL);
+	assert(fcntl(fd, F_GETFL)>=0);
 #if 0
 	char* np = (char*)&n;
 	obuf.insert(obuf.end(), np, np+4);

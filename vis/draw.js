@@ -65,24 +65,22 @@ function setLight() {
 	var ldir = normalize(vec3(1., 1., 1));
 	gl.uniform3f(lloc, ldir[0], ldir[1], ldir[2]);
 }
+var plColor = [[.5,.5,.5], [.1,.1,.9], [.9,.1,.1]];
 function drawCraft(u, view) {
 	var pltrans = unitTransM(u);
 	setTrans(view, pltrans);
 	var cloc = gl.getAttribLocation(prog, 'color');
 	gl.disableVertexAttribArray(cloc);
-	gl.vertexAttrib3f(cloc, .7, .4, .8);
+	var color = plColor[p.owner];
+	gl.vertexAttrib3f(cloc, color[0], color[1], color[2]);
 	u.model.draw();
 }
 function drawPlanet(p, view) {
 	setTrans(view, planetTransM(p));
 	var cloc = gl.getAttribLocation(prog, 'color');
 	gl.disableVertexAttribArray(cloc);
-	if (p.owner==0)
-		gl.vertexAttrib3f(cloc, .5, .5, .5);
-	else if (p.owner==1)
-		gl.vertexAttrib3f(cloc, .1, .1, .9);
-	else
-		gl.vertexAttrib3f(cloc, .9, .1, .1);
+	var color = plColor[p.owner];
+	gl.vertexAttrib3f(cloc, color[0], color[1], color[2]);
 	planetModel.draw();
 }
 

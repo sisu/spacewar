@@ -66,6 +66,8 @@ function handleMessage(e) {
 //				console.log('setting owner: '+p.owner);
 			}
 		} else if (s[0]=='SEND') {
+			var is = s.map(parseInt);
+			var who = is[1], from = is[2], to = is[3], count = is[4];
 		} else {
 			console.log('unknown msg: '+msg);
 		}
