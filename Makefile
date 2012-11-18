@@ -10,7 +10,7 @@ DFLAGS:=-g
 CXXFLAGS:=$(BASEFLAGS) $(DFLAGS)
 LIBS=$(shell sdl-config --libs) -lGL -lGLU -lssl -lcrypto
 
-.PHONY: all clean $(BIN)
+.PHONY: all clean
 
 all: $(ODIRS) $(BIN)
 
