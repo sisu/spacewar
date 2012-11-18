@@ -5,12 +5,14 @@ var game = {
 	prevTime: new Date().getTime(),
 	updateID: null,
 	planets: [],
+	particles: [],
 
 	init: function() {
 		for(var i=0; i<1; ++i) {
 //			var p = new Planet();
 //			this.planets.push(p);
 		}
+//		this.particles.push(new Particle([1,0,0], [1,0,0], [1,0,0,1]));
 	},
 	update: function() {
 		try {
@@ -20,6 +22,7 @@ var game = {
 
 			this.growPlanets(dt);
 			this.moveCrafts(dt);
+			this.moveParticles(dt);
 			draw();
 		} catch(err) {
 			console.log('exception: '+err.stack);
@@ -60,6 +63,7 @@ var game = {
 				this.crafts[i] = this.crafts.last();
 				this.crafts.pop();
 				--i;
+				this.spawnParticles(c.pos, dir, c.owner);
 			}
 		}
 
@@ -80,6 +84,23 @@ var game = {
 //					a.pos = vadd(a.dest.pos, ivmul(norm(ato)/norm(, ato));
 				}
 			}
+		}
+	},
+	moveParticles: function(dt) {
+		for(var i=0; i<this.particles.length; ++i) {
+			this.particles[i].update(dt);
+		}
+		this.particles = this.particles.filter(function(p) {
+			return p.color[3] > 0;
+		});
+	},
+	spawnParticles: function(pos, dir, owner) {
+		for(var i=0; i<10; ++i) {
+			var color = plColor[owner].copy();
+			color.push(1);
+			var p = new Particle(pos, rvec(3), color);
+//			console.log('spawning: '+p.pos+' ; '+p.color);
+			this.particles.push(p);
 		}
 	}
 };

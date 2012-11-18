@@ -1,5 +1,5 @@
 var prog = null;
-var textProg = null, planetProg = null, craftProg = null;
+var textProg = null, planetProg = null, craftProg = null, particleProg = null;
 var gl = null;
 var textTex = null, planetTex = null;
 var palette = [null,null,null];
@@ -21,6 +21,7 @@ function initShaders() {
 	craftProg = makeProg("shader-vs", "shader-fs");
 	planetProg = makeProg("planet-vs", "planet-fs");
 	textProg = makeProg("text-vs", "text-fs");
+	particleProg = makeProg("particle-vs", "particle-fs");
 }
 function makeNumTexture() {
 	var canvas = document.createElement('canvas');
@@ -104,6 +105,8 @@ function makePlanetTexture() {
 	var imgs = [pal0, pal1, pal2];
 	for(var i=0; i<3; ++i)
 		palette[i] = make(imgs[i]);
+}
+function makeParticleTexture() {
 }
 function makeTextures() {
 	makeNumTexture();

@@ -114,6 +114,27 @@ void main() {
 //	tcoord = pos.xy;
 }
 </script>
+<script id="particle-fs" type="x-shader/x-fragment">
+#ifdef GL_ES
+precision highp float;
+#endif
+varying vec4 vcolor;
+void main() {
+	gl_FragColor = vcolor;
+}
+</script>
+<script id="particle-vs" type="x-shader/x-vertex">
+uniform mat4 trans;
+attribute vec3 pos;
+attribute vec4 color;
+varying vec4 vcolor;
+
+void main() {
+	gl_Position = trans * vec4(pos, 1);
+	gl_PointSize = 10.0;
+	vcolor = color;
+}
+</script>
 
 <script type="text/javascript" src="util.js"></script>
 <script type="text/javascript" src="vector.js"></script>
@@ -129,6 +150,7 @@ void main() {
 <script type="text/javascript" src="geometry.js"></script>
 <script type="text/javascript" src="init.js"></script>
 <script type="text/javascript" src="draw.js"></script>
+<script type="text/javascript" src="Particle.js"></script>
 </head>
 <body onload="init()">
 <canvas id="canvas" width="800" height="600">Canvas support required.</canvas>

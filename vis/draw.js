@@ -168,6 +168,12 @@ function draw() {
 		drawPopulation(game.planets[i], view);
 	}
 
+	gl.useProgram(particleProg);
+	prog = particleProg;
+	gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'trans'), false, view);
+	drawParticles();
+
 //	setTrans(view, identityM(4));
 //	setTrans(view, scaleM([1,1,-1]));
 
