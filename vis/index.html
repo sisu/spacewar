@@ -37,6 +37,52 @@ void main() {
 	vcolor = color;
 }
 </script>
+
+<script id="planet-fs" type="x-shader/x-fragment">
+#ifdef GL_ES
+precision highp float;
+#endif
+
+uniform sampler2D palette;
+uniform sampler2D tex;
+uniform vec3 ldir;
+uniform float time;
+
+varying vec4 vpos;
+varying vec3 vnormal;
+varying vec2 tcoord;
+
+void main() {
+	float t = texture2D(tex, tcoord).a + time;
+//	vec3 vcolor = vec3(t,t,t);
+	vec3 vcolor = texture2D(palette, vec2(t,.5)).rgb;
+	vec3 norm = normalize(vnormal);
+//	gl_FragColor = vpos;
+	float a = .3 + .7*dot(norm, ldir);
+	vec3 c = vcolor * vec3(a,a,a);
+	gl_FragColor = vec4(c,1);
+}
+</script>
+<script id="planet-vs" type="x-shader/x-vertex">
+uniform mat4 trans;
+uniform mat3 nmat;
+
+attribute vec3 pos;
+attribute vec3 normal;
+
+varying vec4 vpos;
+varying vec3 vnormal;
+varying vec2 tcoord;
+#define PI 3.1415926535897932384626433832795
+
+void main() {
+	gl_Position = trans * vec4(pos, 1);
+	vpos = vec4(pos,1);
+	vnormal = nmat * normal;
+	tcoord = vec2(.5+atan(pos.z, pos.x)/(2.*PI), atan(pos.y, length(pos.xz))/PI+.5*PI);
+}
+</script>
+
 <script id="text-fs" type="x-shader/x-fragment">
 #ifdef GL_ES
 precision highp float;

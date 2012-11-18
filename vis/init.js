@@ -1,7 +1,8 @@
 var prog = null;
-var textProg = null, planetProg = null;
+var textProg = null, planetProg = null, craftProg = null;
 var gl = null;
-var textTex = null;
+var textTex = null, planetTex = null;
+var palette = [null,null,null];
 
 function makeProg(vs, fs) {
 	var frag = getShader(fs);
@@ -17,7 +18,8 @@ function makeProg(vs, fs) {
 	return prog;
 }
 function initShaders() {
-	planetProg = makeProg("shader-vs", "shader-fs");
+	craftProg = makeProg("shader-vs", "shader-fs");
+	planetProg = makeProg("planet-vs", "planet-fs");
 	textProg = makeProg("text-vs", "text-fs");
 }
 function makeNumTexture() {
@@ -54,6 +56,57 @@ function makeNumTexture() {
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+}
+function makePlanetTexture() {
+	var s = 128;
+	var image = new Array(s*s);
+	for(var i=0; i<s; ++i) {
+		for(var j=0; j<s; ++j) {
+			var x = j, y = i;
+//			image[s*i+j] = i^j;
+			var f = (4.0 + Math.sin(x / 16.0) + Math.sin(y / 8.0) + Math.sin((x + y) / 16.0) + Math.sin(Math.sqrt(x * x + y * y) / 8.0)) / 8.0;
+			image[s*i+j] = 255*f;
+		}
+	}
+	planetTex = gl.createTexture();
+	gl.bindTexture(gl.TEXTURE_2D, planetTex);
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.ALPHA, s, s, 0, gl.ALPHA, gl.UNSIGNED_BYTE, new Uint8Array(image));
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+	var ps = 128;
+	var pal0 = new Array(3*ps);
+	var pal1 = new Array(3*ps);
+	var pal2 = new Array(3*ps);
+	for(var i=0; i<ps; ++i) {
+		var fi = 2 * Math.PI * i / ps;
+
+		pal0[3*i] = pal0[3*i+1] = pal0[3*i+2] = 128 + 128*.5*(1 + Math.sin(fi));
+
+//		pal1[3*i] = 255 * .5 * (1 + Math.sin(fi));
+		pal1[3*i] = 255;
+		pal1[3*i+1] = 300 * .5 * (1 + Math.sin(2*fi));
+		pal1[3*i+2] = 16 * .5 * (1 + Math.sin(8*fi));
+
+		pal2[3*i] = 16 * .5 * (1 + Math.sin(8*fi));
+		pal2[3*i+1] = 300 * .5 * (1 + Math.sin(2*fi));
+		pal2[3*i+2] = 255;
+	}
+	function make(img) {
+		var t = gl.createTexture();
+		gl.bindTexture(gl.TEXTURE_2D, t);
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, ps, 1, 0, gl.RGB, gl.UNSIGNED_BYTE, new Uint8Array(img));
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+		return t;
+	}
+	var imgs = [pal0, pal1, pal2];
+	for(var i=0; i<3; ++i)
+		palette[i] = make(imgs[i]);
+}
+function makeTextures() {
+	makeNumTexture();
+	makePlanetTexture();
 }
 
 /*
@@ -123,7 +176,7 @@ function init() {
 	assert(gl, 'gl');
 //	initDebug();
 	initShaders();
-	makeNumTexture();
+	makeTextures();
 	game.init();
 	draw();
 	game.start();

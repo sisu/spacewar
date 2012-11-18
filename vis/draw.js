@@ -11,6 +11,7 @@ function getViewM() {
 	var trans = translateM(vec3(0.,0.,-75.));
 	return mmmult(proj, trans);
 
+	/*
 	var ppos = vec3(0.,0.,0.);
 
 	if (prevDrawTime===null) {
@@ -33,6 +34,7 @@ function getViewM() {
 	var trans = translateM(vec3(0.,-1.,-15.));
 	var rot = resizeM(rotateX(.5), 4);
 	return mult(proj, trans, rot, ptrans);
+	*/
 }
 function unitTransM(u) {
 //	var curT = new Date().getTime(); var t = (curT-time0) / 1000.;
@@ -51,7 +53,8 @@ function planetTransM(p) {
 	var s = p.size;
 	var trans = translateM(p.pos);
 	var scale = scaleM([s, s, s]);
-	return mmmult(trans, scale);
+	var rot = resizeM(rotateY(p.rotation), 4);
+	return mult(trans, scale, rot);
 }
 function setTrans(proj, mat) {
 	var tloc = gl.getUniformLocation(prog, 'trans');
@@ -79,10 +82,13 @@ function drawCraft(c, view) {
 }
 function drawPlanet(p, view) {
 	setTrans(view, planetTransM(p));
-	var cloc = gl.getAttribLocation(prog, 'color');
-	gl.disableVertexAttribArray(cloc);
-	var color = plColor[p.owner];
-	gl.vertexAttrib3f(cloc, color[0], color[1], color[2]);
+//	var cloc = gl.getAttribLocation(prog, 'color');
+//	gl.disableVertexAttribArray(cloc);
+//	var color = plColor[p.owner];
+//	gl.vertexAttrib3f(cloc, color[0], color[1], color[2]);
+	gl.activeTexture(gl.TEXTURE1);
+	gl.bindTexture(gl.TEXTURE_2D, palette[p.owner]);
+	gl.uniform1f(gl.getUniformLocation(prog, 'time'), p.animState);
 	planetModel.draw();
 }
 function drawPopulation(p, view) {
@@ -117,15 +123,34 @@ function draw() {
 	gl.clear(gl.COLOR_BUFFER_BIT);
 	gl.flush();
 	gl.enable(gl.DEPTH_TEST);
+
 	gl.useProgram(planetProg);
 	prog = planetProg;
 	setLight();
+	gl.activeTexture(gl.TEXTURE0);
+	gl.bindTexture(gl.TEXTURE_2D, planetTex);
+	gl.uniform1i(gl.getUniformLocation(prog, 'tex'), 0);
+	gl.uniform1i(gl.getUniformLocation(prog, 'palette'), 1);
+
+	var time = new Date().getTime();
+	if (prevDrawTime==null) { prevDrawTime = time; }
+	var dt = (time - prevDrawTime) / 1000.0;
+	prevDrawTime = time;
 
 	var view = getViewM();
 
-	for(var i=0; i<game.planets.length; ++i)
-		drawPlanet(game.planets[i], view);
+	for(var i=0; i<game.planets.length; ++i) {
+		var p = game.planets[i];
+		var speed = p.population / 40.0;
+		if (p.owner==0) speed /= 3;
+		p.animState += speed * dt;
+		p.rotation += p.size * dt / 10;
+		drawPlanet(p, view);
+	}
 
+	gl.useProgram(craftProg);
+	prog = craftProg;
+	setLight();
 	for(var i=0; i<game.crafts.length; ++i)
 		drawCraft(game.crafts[i], view);
 
