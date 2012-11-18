@@ -100,7 +100,7 @@ function drawPopulation(p, view) {
 		var d = parseInt(str[i]);
 		gl.vertexAttrib1f(gl.getAttribLocation(prog, 'cnum'), .05 + .1*d);
 		var pos = p.pos.copy();
-		pos[0] += 3*i - .5*str.length;
+		pos[0] += 3*(i+1) - 2*str.length;
 		var mat = mmmult(translateM(pos), scale);
 		gl.uniformMatrix4fv(tloc, false, mmmult(view, mat));
 		quadModel.draw();
