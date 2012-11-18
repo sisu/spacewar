@@ -59,7 +59,7 @@ function makeQuad() {
 	var m = new Model();
 	var vs = [-1,-1,0, 1,-1,0, 1,1,0, -1,1,0];
 	m.vattrs.pos = new Float32Array(vs);
-	m.indices.push(0,1,2, 1,3,2);
+	m.indices.push(0,1,2, 0,2,3);
 	m.load();
 	return m;
 }

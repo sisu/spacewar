@@ -4,7 +4,7 @@ function getCamSpeed(ydiff, prevV) {
 var camY=null, camYVel=0.;
 var prevDrawTime=null;
 
-var planetModel = null;
+var planetModel = null, craftModel = null, quadModel = null;
 
 function getViewM() {
 	var proj = perspectiveM(radians(60.0), 4./3., 0.1, 1000.);
@@ -85,16 +85,40 @@ function drawPlanet(p, view) {
 	gl.vertexAttrib3f(cloc, color[0], color[1], color[2]);
 	planetModel.draw();
 }
+function drawPopulation(p, view) {
+	var W = .4, H = .8;
+	var scale = scaleM([W*p.size,H*p.size,H*p.size]);
+//	var mat = mmmult(translateM(p.pos), scale);
+	var tloc = gl.getUniformLocation(prog, 'trans');
+
+	var cloc = gl.getAttribLocation(prog, 'color');
+	gl.disableVertexAttribArray(cloc);
+	gl.vertexAttrib3f(cloc, .3, .3, .3);
+
+	var str = Math.floor(p.population) + '';
+	for(var i=0; i<str.length; ++i) {
+		var d = parseInt(str[i]);
+		gl.vertexAttrib1f(gl.getAttribLocation(prog, 'cnum'), .05 + .1*d);
+		var pos = p.pos.copy();
+		pos[0] += 3*i - .5*str.length;
+		var mat = mmmult(translateM(pos), scale);
+		gl.uniformMatrix4fv(tloc, false, mmmult(view, mat));
+		quadModel.draw();
+	}
+}
 
 function draw() {
 	if (planetModel==null) {
 		planetModel = makeSphere();
 		craftModel = makeCube();
+		quadModel = makeQuad();
 	}
 	gl.clearColor(0,0,0,1);
 	gl.clear(gl.COLOR_BUFFER_BIT);
 	gl.flush();
 	gl.enable(gl.DEPTH_TEST);
+	gl.useProgram(planetProg);
+	prog = planetProg;
 	setLight();
 
 	var view = getViewM();
@@ -105,12 +129,27 @@ function draw() {
 	for(var i=0; i<game.crafts.length; ++i)
 		drawCraft(game.crafts[i], view);
 
+	gl.useProgram(textProg);
+	prog = textProg;
+	gl.disable(gl.DEPTH_TEST);
+	gl.enable(gl.BLEND);
+	gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+	gl.activeTexture(gl.TEXTURE0);
+	gl.bindTexture(gl.TEXTURE_2D, textTex);
+	var texloc = gl.getUniformLocation(prog, 'tex');
+	gl.uniform1i(texloc, 0);
+	for(var i=0; i<game.planets.length; ++i) {
+		drawPopulation(game.planets[i], view);
+	}
+
 //	setTrans(view, identityM(4));
 //	setTrans(view, scaleM([1,1,-1]));
 
 	var err = gl.getError();
 	if (err!=0) {
-		alert("GL error: "+err);
+		console.log("GL error: "+err);
+		throw 7;
 	}
 }
 function stopDraw() {

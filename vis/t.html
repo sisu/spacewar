@@ -47,7 +47,7 @@ varying vec2 tcoord;
 varying vec3 vcolor;
 
 void main() {
-	float a = texture2D(tex, tcoord).a;
+	float a = texture2D(tex, tcoord).r;
 	gl_FragColor = vec4(vcolor,a);
 }
 </script>
@@ -65,6 +65,7 @@ void main() {
 	gl_Position = trans * vec4(pos, 1);
 	vcolor = color;
 	tcoord = vec2(cnum + pos.x/20., .5*(pos.y+1.));
+//	tcoord = pos.xy;
 }
 </script>
 

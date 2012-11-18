@@ -1,19 +1,8 @@
 var prog = null;
-var textProg = null;
-var model = null;
+var textProg = null, planetProg = null;
 var gl = null;
+var textTex = null;
 
-function makeModel() {
-	var m = new Model();
-	var verts = [
-		-1,-1,0,
-		1,-1,0,
-		0,1,0
-		];
-	m.vattrs.pos = new Float32Array(verts);
-	m.indices.push(0,1,2);
-	return m;
-}
 function makeProg(vs, fs) {
 	var frag = getShader(fs);
 	var vert = getShader(vs);
@@ -28,9 +17,42 @@ function makeProg(vs, fs) {
 	return prog;
 }
 function initShaders() {
-	prog = makeProg("shader-vs", "shader-fs");
+	planetProg = makeProg("shader-vs", "shader-fs");
 	textProg = makeProg("text-vs", "text-fs");
-	gl.useProgram(prog);
+}
+function makeNumTexture() {
+	var canvas = document.createElement('canvas');
+	var W = 12, H =20;
+	canvas.width = 10*W;
+	canvas.height = H;
+	var ctx = canvas.getContext('2d');
+	ctx.fillStyle = 'black';
+	ctx.fillRect(0,0, canvas.width, canvas.height);
+	ctx.fillStyle = 'white';
+	ctx.font = '20px monospace'
+	ctx.textBaseline = 'top';
+	ctx.textAlign = 'center';
+//	ctx.fillText("0123456789", 0, 0);
+	for(var i=0; i<10; ++i) {
+		ctx.fillText(i+'', W*i + W/2, 0);
+	}
+
+	var image = new Array(canvas.width * canvas.height);
+	for(var i=0; i<canvas.height; ++i) {
+		for(var j=0; j<canvas.width; ++j) {
+			image[canvas.width*i+j] = i^j;
+		}
+	}
+
+	textTex = gl.createTexture();
+	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+	gl.bindTexture(gl.TEXTURE_2D, textTex);
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas);
+//	gl.texImage2D(gl.TEXTURE_2D, 0, gl.ALPHA, canvas.width, canvas.height, 0, gl.ALPHA, gl.UNSIGNED_BYTE, new Uint8Array(image));
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 }
 
 /*
@@ -100,6 +122,7 @@ function init() {
 	assert(gl, 'gl');
 //	initDebug();
 	initShaders();
+	makeNumTexture();
 	game.init();
 	draw();
 	game.start();
