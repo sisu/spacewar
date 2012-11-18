@@ -1,4 +1,5 @@
 var prog = null;
+var textProg = null;
 var model = null;
 var gl = null;
 
@@ -13,17 +14,22 @@ function makeModel() {
 	m.indices.push(0,1,2);
 	return m;
 }
-function initShaders() {
-	var frag = getShader("shader-fs");
-	var vert = getShader("shader-vs");
+function makeProg(vs, fs) {
+	var frag = getShader(fs);
+	var vert = getShader(vs);
 
-	prog = gl.createProgram();
+	var prog = gl.createProgram();
 	gl.attachShader(prog, vert);
 	gl.attachShader(prog, frag);
 	gl.linkProgram(prog);
 	if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
 		alert("Failed initializing shader program.");
 	}
+	return prog;
+}
+function initShaders() {
+	prog = makeProg("shader-vs", "shader-fs");
+	textProg = makeProg("text-vs", "text-fs");
 	gl.useProgram(prog);
 }
 

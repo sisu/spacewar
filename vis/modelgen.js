@@ -55,3 +55,11 @@ function makeSphere() {
 	m.load();
 	return m;
 }
+function makeQuad() {
+	var m = new Model();
+	var vs = [-1,-1,0, 1,-1,0, 1,1,0, -1,1,0];
+	m.vattrs.pos = new Float32Array(vs);
+	m.indices.push(0,1,2, 1,3,2);
+	m.load();
+	return m;
+}

@@ -37,6 +37,36 @@ void main() {
 	vcolor = color;
 }
 </script>
+<script id="text-fs" type="x-shader/x-fragment">
+#ifdef GL_ES
+precision highp float;
+#endif
+
+uniform sampler2D tex;
+varying vec2 tcoord;
+varying vec3 vcolor;
+
+void main() {
+	float a = texture2D(tex, tcoord).a;
+	gl_FragColor = vec4(vcolor,a);
+}
+</script>
+<script id="text-vs" type="x-shader/x-vertex">
+uniform mat4 trans;
+
+attribute vec3 pos;
+attribute vec3 color;
+attribute float cnum;
+
+varying vec2 tcoord;
+varying vec3 vcolor;
+
+void main() {
+	gl_Position = trans * vec4(pos, 1);
+	vcolor = color;
+	tcoord = vec2(cnum + pos.x/20., .5*(pos.y+1.));
+}
+</script>
 
 <script type="text/javascript" src="util.js"></script>
 <script type="text/javascript" src="vector.js"></script>
