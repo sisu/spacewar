@@ -37,12 +37,13 @@ function makeNumTexture() {
 		ctx.fillText(i+'', W*i + W/2, 0);
 	}
 
+	/*
 	var image = new Array(canvas.width * canvas.height);
 	for(var i=0; i<canvas.height; ++i) {
 		for(var j=0; j<canvas.width; ++j) {
 			image[canvas.width*i+j] = i^j;
 		}
-	}
+	}*/
 
 	textTex = gl.createTexture();
 	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
