@@ -83,17 +83,25 @@ void sendCrafts(Planet& from, Planet& to, int count) {
 }
 
 void genPlanets(int n) {
-	for(int i=0; i<n; ++i) {
+	const double P = 40;
+	const double S = 5;
+	for(int i=0; i<2; ++i) {
+		Planet p;
+		p.pos = Vec3(P*(2.*i-1), 0., 0.);
+		p.size = S;
+		p.population = 5*S;
+		p.owner = (Player)(1+i);
+		planets.push_back(p);
+	}
+	for(int i=2; i<n; ++i) {
 		Planet p;
 		p.owner = NONE;
-		p.size = 3*(1+randf());
+		p.size = 2*(1+2*randf());
 		p.population = (int)(5*p.size);
 		p.pos = 30.f*rvec();
 		planets.push_back(p);
 		cout<<"planet "<<p.pos<<' '<<p.size<<'\n';
 	}
-	planets[0].owner = P1;
-	planets[1].owner = P2;
 }
 
 Process proc1, proc2;
@@ -242,6 +250,8 @@ int main(int argc, char* argv[]) {
 	// observer has disconnected.
 	signal(SIGPIPE, SIG_IGN);
 
+	srand(time(0));
+
 	assert(argc==3);
 	if (argv[1]==string("-r")) {
 		replayIn.open(argv[2]);
@@ -267,7 +277,7 @@ int main(int argc, char* argv[]) {
 
 		replayOut.open("game.replay");
 
-		genPlanets(10);
+		genPlanets(12);
 		proc1.send(planetDesc(P1));
 		proc2.send(planetDesc(P2));
 		replayOut << planetDesc(P1);

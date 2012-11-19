@@ -197,7 +197,8 @@ void draw(double t) {
 	setProjection();
 	glLoadIdentity();
 	glTranslatef(0,0,-75);
-	double curRot = 30*t;
+//	double curRot = 30*t;
+	double curRot = 0;
 	glRotatef(curRot, 0, 1, 0);
 
 	glEnable(GL_DEPTH_TEST);
