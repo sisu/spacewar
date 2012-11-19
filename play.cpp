@@ -201,6 +201,17 @@ void runReplay() {
 		replayIn >> replayTime;
 	}
 }
+bool testEnd(double t) {
+	if (t>=60) return 1;
+
+	int counts[3] = {};
+	for(size_t i=0; i<planets.size(); ++i) {
+		++counts[planets[i].owner];
+	}
+//	cout<<"end: "<<t<<' '<<counts[P1]<<' '<<counts[P2]<<'\n';
+	if (counts[P1]==0 || counts[P2]==0) return 1;
+	return 0;
+}
 void runGame() {
 	double prevT = getTime();
 	double t0 =prevT;
@@ -219,6 +230,9 @@ void runGame() {
 		double dt = curT - prevT;
 		prevT = curT;
 //		cout<<"dt: "<<dt<<'\n';
+
+		if (testEnd(curTime)) break;
+
 		if (dt<=0) continue;
 		update(dt);
 
@@ -291,4 +305,15 @@ int main(int argc, char* argv[]) {
 	if (!isReplay) {
 		replayOut << curTime<<" END\n";
 	}
+
+	int pcounts[3] = {};
+	double ucounts[3] = {};
+	for(size_t i=0; i<planets.size(); ++i) {
+		Planet& p = planets[i];
+		++pcounts[p.owner];
+		ucounts[p.owner] += (int)p.population;
+	}
+//	for(int i=0; i<3; ++i) cout<<pcounts[i]<<' '<<ucounts[i]<<' ';cout<<'\n';
+	bool p1win = pcounts[P1]!=pcounts[P2] ? pcounts[P1]>pcounts[P2] : ucounts[P1]>ucounts[P2];
+	cout<<"WINNER: "<<(p1win ? "1" : "2")<<'\n';
 }
