@@ -217,6 +217,7 @@ void runGame() {
 	double prevT = getTime();
 	double t0 =prevT;
 	double lastWrite=0;
+	double lastSend=0;
 	while(1) {
 		if (!isReplay) {
 			readInput(proc1, P1);
@@ -253,8 +254,11 @@ void runGame() {
 				replayOut.flush();
 				lastWrite = curTime;
 
-				sendToObs(msg);
 			}
+		}
+		if (curTime-lastSend >= .1) {
+			sendToObs(statusMessage(P1));
+			lastSend = curTime;
 		}
 	}
 //	cout<<"quitting\n";
