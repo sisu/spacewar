@@ -8,14 +8,16 @@ var planetModel = null, craftModel = null, quadModel = null;
 var camRotX = 0.0;
 var camRotY = 0.0;
 
+function getProjM() {
+	return perspectiveM(radians(60.0), 4./3., 0.1, 1000.);
+}
 function getViewM() {
-	var proj = perspectiveM(radians(60.0), 4./3., 0.1, 1000.);
 	var trans = translateM(vec3(0.,0.,-75.));
 	var roty = resizeM(rotateY(camRotX), 4);
 	var rotx = resizeM(rotateX(camRotY), 4);
 //	rot = rotateY(0.0);
 //	return mult(proj, trans);
-	return mult(proj, trans, rotx, roty);
+	return mult(trans, rotx, roty);
 
 	/*
 	var ppos = vec3(0.,0.,0.);
@@ -97,9 +99,8 @@ function drawPlanet(p, view) {
 	gl.uniform1f(gl.getUniformLocation(prog, 'time'), p.animState);
 	planetModel.draw();
 }
-function drawPopulation(p, view) {
+function drawPopulation(p, proj, view) {
 	var W = .4, H = .8;
-	var scale = scaleM([W*p.size,H*p.size,H*p.size]);
 //	var mat = mmmult(translateM(p.pos), scale);
 	var tloc = gl.getUniformLocation(prog, 'trans');
 
@@ -107,14 +108,22 @@ function drawPopulation(p, view) {
 	gl.disableVertexAttribArray(cloc);
 	gl.vertexAttrib3f(cloc, .3, .3, .3);
 
+//	var mat = mmmult(translateM(p.pos), scale);
+//	var view2 = mmmult(view, mat);
+	var view2 = mmmult(view, translateM(p.pos));
+	for(var k=0; k<3; ++k) for(var j=0; j<3; ++j)
+		view2[4*k+j] = k==j ? 1.0 : 0.0;
+	var scale = scaleM([W*p.size,H*p.size,H*p.size]);
+	var mat = mult(proj, view2, scale);
+
 	var str = Math.floor(p.population) + '';
 	for(var i=0; i<str.length; ++i) {
 		var d = parseInt(str[i]);
 		gl.vertexAttrib1f(gl.getAttribLocation(prog, 'cnum'), .05 + .1*d);
-		var pos = p.pos.copy();
-		pos[0] += 3*(i+1) - 2*str.length;
-		var mat = mmmult(translateM(pos), scale);
-		gl.uniformMatrix4fv(tloc, false, mmmult(view, mat));
+		var rpos = vec3(2*i - (str.length-1), 0., 0.);
+
+		var trans = translateM(rpos);
+		gl.uniformMatrix4fv(tloc, false, mmmult(mat, trans));
 		quadModel.draw();
 	}
 }
@@ -144,7 +153,9 @@ function draw() {
 	var dt = (time - prevDrawTime) / 1000.0;
 	prevDrawTime = time;
 
-	var view = getViewM();
+	var proj = getProjM();
+	var view0 = getViewM();
+	var view = mmmult(proj, view0);
 
 	for(var i=0; i<game.planets.length; ++i) {
 		var p = game.planets[i];
@@ -172,7 +183,7 @@ function draw() {
 	var texloc = gl.getUniformLocation(prog, 'tex');
 	gl.uniform1i(texloc, 0);
 	for(var i=0; i<game.planets.length; ++i) {
-		drawPopulation(game.planets[i], view);
+		drawPopulation(game.planets[i], proj, view0);
 	}
 
 	gl.enable(gl.DEPTH_TEST);

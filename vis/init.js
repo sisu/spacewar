@@ -195,7 +195,7 @@ function mouseMove(e) {
 //	console.log(e.screenY+' '+e.screenX);
 	var dx = e.screenX - prevMouseX;
 	var dy = e.screenY - prevMouseY;
-	var speed = .05;
+	var speed = .03;
 	camRotX += speed*dx;
 	camRotY += speed*dy;
 //	console.log(camRotX);
