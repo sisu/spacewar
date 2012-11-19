@@ -27,6 +27,9 @@ struct Process {
 
 		fcntl(out[0], F_SETFL, O_NONBLOCK | fcntl(out[0], F_GETFL, 0));
 	}
+	void start(const std::string s) {
+		start(s.c_str());
+	}
 	std::string readLine() {
 		char tmp[1024];
 		while(1) {

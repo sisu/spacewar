@@ -20,7 +20,8 @@ const float MOVE_SPEED = 9;
 
 ofstream replayOut;
 ifstream replayIn;
-bool isReplay=0;
+bool isReplay = 0;
+bool noGraphics = 0;
 
 void hitPlanet(Craft& c, Planet& p) {
 	if (c.owner == p.owner) {
@@ -236,7 +237,8 @@ void runGame() {
 		if (dt<=0) continue;
 		update(dt);
 
-		draw(curTime);
+		if (!noGraphics)
+			draw(curTime);
 		SDL_Delay(1);
 
 		SDL_Event e;
@@ -265,9 +267,23 @@ int main(int argc, char* argv[]) {
 	signal(SIGPIPE, SIG_IGN);
 
 	srand(time(0));
+	string replayFile = "game.replay";
+	vector<string> bots;
 
-	assert(argc==3);
-	if (argv[1]==string("-r")) {
+	for(int i=1; i<argc; ++i) {
+		string s = argv[i];
+		if (s=="-r") {
+			isReplay = 1;
+		} else if (s=="-n") {
+			noGraphics = 1;
+		} else if (s=="-f") {
+			replayFile = argv[++i];
+		} else {
+			bots.push_back(s);
+		}
+	}
+
+	if (isReplay) {
 		replayIn.open(argv[2]);
 		assert(replayIn.good());
 		isReplay = 1;
@@ -286,19 +302,21 @@ int main(int argc, char* argv[]) {
 		}
 		replayIn >> replayTime;
 	} else {
-		proc1.start(argv[1]);
-		proc2.start(argv[2]);
+		assert(bots.size()==2);
+		proc1.start(bots[0]);
+		proc2.start(bots[1]);
 
-		replayOut.open("game.replay");
+		replayOut.open(replayFile);
 
 		genPlanets(12);
 		proc1.send(planetDesc(P1));
 		proc2.send(planetDesc(P2));
 		replayOut << planetDesc(P1);
 
-		startServer();
 	}
-	openWindow(800, 600);
+	startServer();
+	if (!noGraphics)
+		openWindow(800, 600);
 
 	runGame();
 
