@@ -5,11 +5,17 @@ var camY=null, camYVel=0.;
 var prevDrawTime=null;
 
 var planetModel = null, craftModel = null, quadModel = null;
+var camRotX = 0.0;
+var camRotY = 0.0;
 
 function getViewM() {
 	var proj = perspectiveM(radians(60.0), 4./3., 0.1, 1000.);
 	var trans = translateM(vec3(0.,0.,-75.));
-	return mmmult(proj, trans);
+	var roty = resizeM(rotateY(camRotX), 4);
+	var rotx = resizeM(rotateX(camRotY), 4);
+//	rot = rotateY(0.0);
+//	return mult(proj, trans);
+	return mult(proj, trans, rotx, roty);
 
 	/*
 	var ppos = vec3(0.,0.,0.);

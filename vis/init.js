@@ -188,9 +188,27 @@ function initSocket() {
 	ws.onerror = function(e) { console.log("ws error"); }
 }
 
+var dragging = false;
+var prevMouseX, prevMouseY;
+function mouseMove(e) {
+	if (!dragging) return;
+//	console.log(e.screenY+' '+e.screenX);
+	var dx = e.screenX - prevMouseX;
+	var dy = e.screenY - prevMouseY;
+	var speed = .05;
+	camRotX += speed*dx;
+	camRotY += speed*dy;
+//	console.log(camRotX);
+	prevMouseX = e.screenX;
+	prevMouseY = e.screenY;
+}
+
 function init() {
 	initSocket();
 	var canvas = document.getElementById('canvas');
+	canvas.onmousedown = function(e) {dragging = true; prevMouseX=e.screenX; prevMouseY=e.screenY;};
+	canvas.onmouseup = function() {dragging =false;};
+	canvas.onmousemove = mouseMove;
 	gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
 	assert(gl, 'gl');
 //	initDebug();
