@@ -308,7 +308,7 @@ int main(int argc, char* argv[]) {
 
 		replayOut.open(replayFile);
 
-		genPlanets(12);
+		genPlanets(13);
 		proc1.send(planetDesc(P1));
 		proc2.send(planetDesc(P2));
 		replayOut << planetDesc(P1);
@@ -331,6 +331,8 @@ int main(int argc, char* argv[]) {
 		++pcounts[p.owner];
 		ucounts[p.owner] += (int)p.population;
 	}
+	for(size_t i=0; i<crafts.size(); ++i)
+		++ucounts[crafts[i].owner];
 //	for(int i=0; i<3; ++i) cout<<pcounts[i]<<' '<<ucounts[i]<<' ';cout<<'\n';
 	bool p1win = pcounts[P1]!=pcounts[P2] ? pcounts[P1]>pcounts[P2] : ucounts[P1]>ucounts[P2];
 	cout<<"WINNER: "<<(p1win ? "1" : "2")<<'\n';
