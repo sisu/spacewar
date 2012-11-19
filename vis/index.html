@@ -79,7 +79,7 @@ void main() {
 	gl_Position = trans * vec4(pos, 1);
 	vpos = vec4(pos,1);
 	vnormal = nmat * normal;
-	tcoord = vec2(.5+atan(pos.z, pos.x)/(2.*PI), atan(pos.y, length(pos.xz))/PI+.5*PI);
+	tcoord = vec2(.5+atan(pos.z, pos.x)/(2.*PI), atan(pos.y, length(pos.xz))/PI+.5);
 }
 </script>
 
