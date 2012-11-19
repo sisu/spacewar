@@ -63,8 +63,8 @@ var game = {
 				this.crafts[i] = this.crafts.last();
 				this.crafts.pop();
 				--i;
-				if (c.owner!=p.owner)
-					this.spawnParticles(c.pos, dir, c.owner);
+//				if (c.owner!=p.owner)
+//					this.spawnParticles(c.pos, dir, c.owner);
 			}
 		}
 
