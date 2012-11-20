@@ -206,9 +206,8 @@ bool testEnd(double t) {
 	if (t>=60) return 1;
 
 	int counts[3] = {};
-	for(size_t i=0; i<planets.size(); ++i) {
-		++counts[planets[i].owner];
-	}
+	for(size_t i=0; i<planets.size(); ++i) ++counts[planets[i].owner];
+	for(size_t i=0; i<crafts.size(); ++i) ++counts[crafts[i].owner];
 //	cout<<"end: "<<t<<' '<<counts[P1]<<' '<<counts[P2]<<'\n';
 	if (counts[P1]==0 || counts[P2]==0) return 1;
 	return 0;
