@@ -140,7 +140,8 @@ string sendMessage(int from, int to, int count, Player sender, Player pl) {
 double curTime;
 void readInput(Process& proc, Player pl) {
 	string s;
-	while(!(s = proc.readLine()).empty()) {
+	int maxRead = 10;
+	while(maxRead-- && !(s = proc.readLine()).empty()) {
 //		cout<<"got message from "<<pl<<" : "<<s<<endl;
 		istringstream iss(s);
 		string msg;
