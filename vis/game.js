@@ -110,7 +110,7 @@ var game = {
 		}
 	},
 	runReplay: function() {
-		if (this.replayStr==null) return;
+		if (this.replayStr==null || this.replayLine>=this.replayStr.length) return;
 		while(true) {
 			var line = this.replayStr[this.replayLine].split(' ');
 			var t = parseFloat(line[0]);
