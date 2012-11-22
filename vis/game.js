@@ -117,7 +117,7 @@ var game = {
 			line.shift();
 			if (t > this.totalTime) break;
 			++this.replayLine;
-			handleMessage(line);
+			handleSplitted(line);
 		}
 	},
 	initReplay: function() {
