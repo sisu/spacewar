@@ -121,7 +121,7 @@ var game = {
 		}
 	},
 	initReplay: function() {
-		handleMessage(this.replayStr);
+		handleInitMessage(this.replayStr);
 		this.replayLine = parseInt(this.replayStr[0]) + 1;
 	}
 };

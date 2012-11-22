@@ -141,46 +141,49 @@ function debug(str) {
 }*/
 
 initDone = false;
-function handleMessage(e) {
-	var msg = e.data;
+function handleInitMessage(lines) {
+	var n = parseInt(lines[0]);
+	console.log('planets: '+n);
+	game.planets.length = n;
+	for(var i=0; i<n; ++i) {
+		var s = lines[i+1].split(' ');
+		var fs = s.map(parseFloat);
+		var x=fs[0], y=fs[1], z=fs[2], size=fs[3], pop=fs[4], owner=parseInt(s[5]);
+		game.planets[i] = new Planet(x,y,z,size,pop,owner);
+	}
+	initDone = true;
+}
 //	console.log("ws message: "+msg);
-
-	if (!initDone) {
-		var lines = msg.split('\n');
-		var n = parseInt(lines[0]);
-		console.log('planets: '+n);
-		game.planets.length = n;
-		for(var i=0; i<n; ++i) {
-			var s = lines[i+1].split(' ');
-			var fs = s.map(parseFloat);
-			var x=fs[0], y=fs[1], z=fs[2], size=fs[3], pop=fs[4], owner=parseInt(s[5]);
-			game.planets[i] = new Planet(x,y,z,size,pop,owner);
-		}
-		initDone = 1;
-	} else {
-		var s = msg.split(' ');
-		if (s[0]=='PLANETS') {
+function handleSplitted(s) {
+	if (s[0]=='PLANETS') {
 //			console.log('planets: '+s);
 //			console.log(game.planets.length);
-			for(var i=0; i<game.planets.length; ++i) {
-				var p = game.planets[i];
-				p.population = parseInt(s[2*i+1]);
-				p.owner = parseInt(s[2*i+2]);
+		for(var i=0; i<game.planets.length; ++i) {
+			var p = game.planets[i];
+			p.population = parseInt(s[2*i+1]);
+			p.owner = parseInt(s[2*i+2]);
 //				console.log('setting owner: '+p.owner);
-			}
-		} else if (s[0]=='SEND') {
-			s.shift();
+		}
+	} else if (s[0]=='SEND') {
+		s.shift();
 //			var is = s.map(parseInt); // fails, chrome bug?
-			var is = s.map(function(x){return parseInt(x);});
+		var is = s.map(function(x){return parseInt(x);});
 //			console.log(s);
 //			console.log(is);
-			var who = is[0], from = is[1], to = is[2], count = is[3];
-			game.sendCrafts(who, from, to, count);
-		} else if (s[0]=='STOP') {
-			game.stop();
-		} else {
-			console.log('unknown msg: '+msg);
-		}
+		var who = is[0], from = is[1], to = is[2], count = is[3];
+		game.sendCrafts(who, from, to, count);
+	} else if (s[0]=='STOP') {
+		game.stop();
+	} else {
+		console.log('unknown msg: '+s);
+	}
+}
+function handleMessage(e) {
+	var msg = e.data;
+	if (!initDone) {
+		handleInitMessage(msg.split('\n'));
+	} else {
+		handleSplitted(msg.split(' '));
 	}
 }
 
