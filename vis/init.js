@@ -208,16 +208,18 @@ function mouseMove(e) {
 }
 
 function init() {
+	game.init();
 	var replay = QueryString.replay;
 	console.log('replay: '+replay);
 	if (replay==undefined) {
 		initSocket();
 	} else {
 		var c = new XMLHttpRequest();
-		c.open('GET', replay);
-		c.onreadystatechange = function() {
-			console.log(c.responseText);
-		}
+		c.open('GET', replay, false);
+		c.send(null);
+//		console.log(c.responseText);
+		game.replayStr = c.responseText.split('\n');
+		game.initReplay();
 	}
 
 	var canvas = document.getElementById('canvas');
@@ -229,7 +231,6 @@ function init() {
 //	initDebug();
 	initShaders();
 	makeTextures();
-	game.init();
 	draw();
 	game.start();
 	console.log("init done");

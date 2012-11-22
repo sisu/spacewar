@@ -119,5 +119,9 @@ var game = {
 			++this.replayLine;
 			handleMessage(line);
 		}
+	},
+	initReplay: function() {
+		handleMessage(this.replayStr);
+		this.replayLine = parseInt(this.replayStr[0]) + 1;
 	}
 };
