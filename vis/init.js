@@ -176,6 +176,8 @@ function handleMessage(e) {
 //			console.log(is);
 			var who = is[0], from = is[1], to = is[2], count = is[3];
 			game.sendCrafts(who, from, to, count);
+		} else if (s[0]=='STOP') {
+			game.stop();
 		} else {
 			console.log('unknown msg: '+msg);
 		}
@@ -206,7 +208,18 @@ function mouseMove(e) {
 }
 
 function init() {
-	initSocket();
+	var replay = QueryString.replay;
+	console.log('replay: '+replay);
+	if (replay==undefined) {
+		initSocket();
+	} else {
+		var c = new XMLHttpRequest();
+		c.open('GET', replay);
+		c.onreadystatechange = function() {
+			console.log(c.responseText);
+		}
+	}
+
 	var canvas = document.getElementById('canvas');
 	canvas.onmousedown = function(e) {dragging = true; prevMouseX=e.screenX; prevMouseY=e.screenY;};
 	canvas.onmouseup = function() {dragging =false;};

@@ -6,6 +6,9 @@ var game = {
 	updateID: null,
 	planets: [],
 	particles: [],
+	totalTime: 0.0,
+	replayStr: null,
+	replayLine: 0,
 
 	init: function() {
 		for(var i=0; i<1; ++i) {
@@ -19,7 +22,9 @@ var game = {
 			var time = new Date().getTime();
 			var dt = (time-this.prevTime)/1000.;
 			this.prevTime = time;
+			this.totalTime += dt;
 
+			this.runReplay();
 			this.growPlanets(dt);
 			this.moveCrafts(dt);
 			this.moveParticles(dt);
@@ -102,6 +107,17 @@ var game = {
 			var p = new Particle(pos, rvec(3), color);
 //			console.log('spawning: '+p.pos+' ; '+p.color);
 			this.particles.push(p);
+		}
+	},
+	runReplay: function() {
+		if (this.replayStr==null) return;
+		while(true) {
+			var line = this.replayStr[this.replayLine].split(' ');
+			var t = parseFloat(line[0]);
+			line.shift();
+			if (t > this.totalTime) break;
+			++this.replayLine;
+			handleMessage(line);
 		}
 	}
 };
