@@ -172,7 +172,7 @@ function handleSplitted(s) {
 //			console.log(is);
 		var who = is[0], from = is[1], to = is[2], count = is[3];
 		game.sendCrafts(who, from, to, count);
-	} else if (s[0]=='STOP') {
+	} else if (s[0]=='END') {
 		game.stop();
 	} else {
 		console.log('unknown msg: '+s);
