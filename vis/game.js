@@ -119,6 +119,7 @@ var game = {
 			++this.replayLine;
 			handleSplitted(line);
 		}
+		if (this.replayLine>=this.replayStr.length) game.stop();
 	},
 	initReplay: function() {
 		handleInitMessage(this.replayStr);
