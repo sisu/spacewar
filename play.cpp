@@ -338,6 +338,20 @@ int main(int argc, char* argv[]) {
 	for(size_t i=0; i<crafts.size(); ++i)
 		++ucounts[crafts[i].owner];
 //	for(int i=0; i<3; ++i) cout<<pcounts[i]<<' '<<ucounts[i]<<' ';cout<<'\n';
-	bool p1win = pcounts[P1]!=pcounts[P2] ? pcounts[P1]>pcounts[P2] : ucounts[P1]>ucounts[P2];
-	cout<<"WINNER: "<<(p1win ? "1" : "2")<<'\n';
+//	bool p1win = pcounts[P1]!=pcounts[P2] ? pcounts[P1]>pcounts[P2] : ucounts[P1]>ucounts[P2];
+//	bool p1win = ucounts[P1]>ucounts[P2];
+//	cout<<"WINNER: "<<(p1win ? "1" : "2")<<'\n';
+	int c1 = ucounts[P1], c2 = ucounts[P2];
+	int s1 = 100*c1/(c1+c2);
+	int s2 = 100*c2/(c1+c2);
+	while(s1+s2<100) {
+		if (s1<s2) ++s1;
+		else ++s2;
+	}
+	cout<<"SCORE: "<<s1<<' '<<s2<<'\n';
+
+	if (!isReplay) {
+		ofstream out("result.txt");
+		out<<s1<<' '<<s2<<'\n';
+	}
 }
