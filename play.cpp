@@ -260,6 +260,7 @@ void runGame() {
 			sendToObs(statusMessage(P1));
 			lastSend = curTime;
 		}
+		usleep(1000);
 	}
 //	cout<<"quitting\n";
 }
