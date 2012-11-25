@@ -14,9 +14,9 @@ struct Process {
 		name = s;
 
 		size_t pos = s.find_last_of('/');
+		std::string dir;
 		if (pos!=std::string::npos) {
-			std::string dir = s.substr(0,pos);
-			chdir(dir.c_str());
+			dir = s.substr(0,pos);
 			s = "./"+s.substr(pos+1);
 		}
 
@@ -24,6 +24,7 @@ struct Process {
 
 		int pid = fork();
 		if (!pid) {
+			if (!dir.empty()) chdir(dir.c_str());
 			dup2(out[1], STDOUT_FILENO);
 			dup2(in[0], STDIN_FILENO);
 			system(s.c_str());
