@@ -35,7 +35,7 @@ void play() {
 	for(int i=0; i<nPlanets; ++i) {
 		Planet& p = planets[i];
 //		cerr<<"testing plane "<<p.owner<<' '<<p.population<<'\n';
-		if (p.owner == 1 && p.population>=10) {
+		if (p.owner == 1 && p.population>=20) {
 			int count = rand() % (int)p.population;
 			int to = rand() % nPlanets;
 			cout<<"SEND "<<i<<' '<<to<<' '<<count<<endl;
@@ -52,7 +52,7 @@ int main() {
 		cin >> p.x >> p.y >> p.z >> p.size >> p.population >> p.owner;
 		planets.push_back(p);
 	}
-	cerr<<"read planets done "<<nPlanets<<' '<<!!cin<<endl;
+//	cerr<<"read planets done "<<nPlanets<<' '<<!!cin<<endl;
 
 	while(1) {
 		readInput();
