@@ -31,14 +31,14 @@ public class Bot {
 		System.out.println("STATUS");
 		while(true) {
 			String msg = s.next();
-			if (msg=="PLANETS") {
+			if (msg.equals("PLANETS")) {
 				for(int i=0; i<planets.length; ++i) {
 					Planet p = planets[i];
 					p.population = s.nextDouble();
 					p.owner = s.nextInt();
 				}
 				break;
-			} else if (msg=="SEND") {
+			} else if (msg.equals("SEND")) {
 				int owner = s.nextInt();
 				int from = s.nextInt();
 				int to = s.nextInt();
