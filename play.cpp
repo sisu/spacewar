@@ -28,7 +28,7 @@ void hitPlanet(Craft& c, Planet& p) {
 		p.population++;
 	} else {
 		p.population--;
-		if (p.population<=0) {
+		if (p.population<0) {
 			p.population = 1;
 			p.owner = c.owner;
 		} else if (p.population<1) {
@@ -83,6 +83,14 @@ void sendCrafts(Planet& from, Planet& to, int count) {
 #endif
 }
 
+Planet makePlanet() {
+	Planet p;
+	p.owner = NONE;
+	p.size = 2*(1+2*randf());
+	p.population = rand() % (int)(5*p.size);
+	p.pos = 15.f*(rvec()+Vec3(1,0,0));
+	return p;
+}
 void genPlanets(int n) {
 	const double P = 40;
 	const double S = 5;
@@ -90,18 +98,30 @@ void genPlanets(int n) {
 		Planet p;
 		p.pos = Vec3(P*(2.*i-1), 0., 0.);
 		p.size = S;
-		p.population = 5*S;
+		p.population = (int)(5*S);
 		p.owner = (Player)(1+i);
 		planets.push_back(p);
 	}
 	for(int i=2; i<n; ++i) {
+again:
 		Planet p;
-		p.owner = NONE;
-		p.size = 2*(1+2*randf());
-		p.population = (int)(5*p.size);
-		p.pos = 30.f*rvec();
+		if (i&1) {
+			p = planets.back();
+			p.pos[0] *= -1;
+		} else {
+			p = makePlanet();
+			if (i<n-1) {
+				if (fabs(p.pos[0]) < p.size) goto again;
+			} else {
+				p.pos[0] = 0;
+			}
+			for(size_t j=0; j<planets.size(); ++j) {
+				if (norm(planets[j].pos-p.pos) <= p.size + planets[j].size) {
+					goto again;
+				}
+			}
+		}
 		planets.push_back(p);
-		cout<<"planet "<<p.pos<<' '<<p.size<<'\n';
 	}
 }
 
@@ -117,7 +137,7 @@ string planetDesc(Player pl) {
 	for(size_t i=0; i<planets.size(); ++i) {
 		Planet& p = planets[i];
 		int owner = fixPl(p.owner, pl);;
-		oss << p.pos[0]<<' '<<p.pos[1]<<' '<<p.pos[2]<<' '<<p.size<<' '<<p.population<<' '<<owner<<'\n';
+		oss << p.pos[0]<<' '<<p.pos[1]<<' '<<p.pos[2]<<' '<<p.size<<' '<<(int)p.population<<' '<<owner<<'\n';
 	}
 	return oss.str();
 }
