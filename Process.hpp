@@ -10,15 +10,23 @@ struct Process {
 	~Process() {
 		if (pid) kill();
 	}
-	void start(const char* path) {
+	void start(std::string s) {
+		name = s;
+
+		size_t pos = s.find_last_of('/');
+		if (pos!=std::string::npos) {
+			std::string dir = s.substr(0,pos);
+			chdir(dir.c_str());
+			s = "./"+s.substr(pos+1);
+		}
+
 		init();
-		name = path;
 
 		int pid = fork();
 		if (!pid) {
 			dup2(out[1], STDOUT_FILENO);
 			dup2(in[0], STDIN_FILENO);
-			system(path);
+			system(s.c_str());
 			perror(name.c_str());
 			abort();
 		}
@@ -26,9 +34,6 @@ struct Process {
 		std::cout<<"got pid "<<this->pid<<std::endl;
 
 		fcntl(out[0], F_SETFL, O_NONBLOCK | fcntl(out[0], F_GETFL, 0));
-	}
-	void start(const std::string s) {
-		start(s.c_str());
 	}
 	std::string readLine() {
 		char tmp[1024];
