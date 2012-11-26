@@ -285,11 +285,19 @@ void runGame() {
 //	cout<<"quitting\n";
 }
 
+void sighandler(int sig)
+{
+	cout<<"caught signal "<<sig<<endl;
+	exit(-1);
+}
+
 int main(int argc, char* argv[]) {
 	// At least chrome doesn't seem to close connections properly so ignoring
 	// broken pipe errors seems to be the only way to avoid crashing after
 	// observer has disconnected.
 	signal(SIGPIPE, SIG_IGN);
+
+	signal(SIGTERM, sighandler);
 
 	srand(time(0));
 	string replayFile = "game.replay";
