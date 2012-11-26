@@ -35,6 +35,8 @@ var game = {
 		}
 	},
 	start: function() {
+		this.crafts = [];
+		this.particles = [];
 		if (this.updateID) return;
 		this.prevTime = new Date().getTime();
 		this.updateID = setInterval(function() {game.update();},30);
