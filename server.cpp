@@ -50,17 +50,19 @@ struct WSHeader {
 };
 void readWS(net::Connection& conn) {
 	if (!conn.data.empty()) {
-		WSHeader* h = (WSHeader*)&conn.data[0];
-		cout<<"payload: "<<h->PAYLOAD<<" ; "<<h->OP_CODE<<'\n';
+//		WSHeader* h = (WSHeader*)&conn.data[0];
+//		cout<<"payload: "<<h->PAYLOAD<<" ; "<<h->OP_CODE<<'\n';
 //		cout<<"mask "<<h->MASK<<'\n';
 		char* mask = &conn.data[2];
 		for(size_t i=6; i<conn.data.size(); ++i)
 			conn.data[i] ^= mask[(i-6)%4];
+#if 0
 		cout<<"data: "<<conn.data.substr(6)<<'\n';
 		for(size_t i=0; i<conn.data.size(); ++i) {
 			cout<<(unsigned)(unsigned char)conn.data[i]<<' ';
 		}
 		cout<<'\n';
+#endif
 		conn.data.clear();
 	}
 }
