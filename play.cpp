@@ -15,8 +15,9 @@ using namespace std;
 vector<Planet> planets;
 vector<Craft> crafts;
 
-const float GROW_SPEED = 3;
-const float MOVE_SPEED = 9;
+const float GROW_SPEED = 6;
+const float MOVE_SPEED = 18;
+const float MAX_TIME = 30;
 
 ofstream replayOut;
 ifstream replayIn;
@@ -224,7 +225,7 @@ void runReplay() {
 	}
 }
 bool testEnd(double t) {
-	if (t>=60) return 1;
+	if (t>=MAX_TIME) return 1;
 
 	int counts[3] = {};
 	for(size_t i=0; i<planets.size(); ++i) ++counts[planets[i].owner];
