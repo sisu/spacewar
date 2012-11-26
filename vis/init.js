@@ -189,8 +189,8 @@ function handleMessage(e) {
 
 function initSocket() {
 	ws = new WebSocket("ws://127.0.0.1:41629");
-	ws.onopen = function(e) { console.log("ws open"); ws.send("lol"); }
-	ws.onclose = function(e) { console.log("ws close"); game.stop(); }
+	ws.onopen = function(e) { console.log("ws open"); /*ws.send("lol");*/ game.start(); }
+	ws.onclose = function(e) { game.stop(); setTimeout(initSocket, 1000); }
 	ws.onmessage = handleMessage;
 	ws.onerror = function(e) { console.log("ws error"); }
 }
@@ -234,8 +234,8 @@ function init() {
 //	initDebug();
 	initShaders();
 	makeTextures();
-	draw();
-	game.start();
+//	draw();
+//	game.start();
 	console.log("init done");
 }
 
