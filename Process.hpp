@@ -32,7 +32,7 @@ struct Process {
 			abort();
 		}
 		this->pid = pid;
-		std::cout<<"got pid "<<this->pid<<std::endl;
+		std::cerr<<"got pid "<<this->pid<<std::endl;
 
 		fcntl(out[0], F_SETFL, O_NONBLOCK | fcntl(out[0], F_GETFL, 0));
 	}
@@ -58,7 +58,7 @@ struct Process {
 		pipe(out);
 	}
 	void kill() {
-		std::cout<<"terminating process "<<pid<<' '<<name<<std::endl;
+		std::cerr<<"terminating process "<<pid<<' '<<name<<std::endl;
 		::kill(pid, SIGKILL);
 	}
 	int in[2];
