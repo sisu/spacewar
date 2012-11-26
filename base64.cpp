@@ -47,7 +47,7 @@ string encode64(string s) {
 			curS -= 6;
 		}
 	}
-	cout<<"curS "<<curS<<'\n';
+//	cout<<"curS "<<curS<<'\n';
 	if (curS==2) {
 		r += encTable[cur<<4];
 		r+='=';

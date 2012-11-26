@@ -102,10 +102,10 @@ void handshake(net::Connection& conn) {
 			string key;
 			iss>>key;
 //				key = "x3JJHMbDL1EzLkh9GBhXDw==";
-			cout<<"key: "<<key<<'\n';
+//			cout<<"key: "<<key<<'\n';
 			char buf[1<<12];
 			sprintf(buf, wsResp, wsReply(key).c_str());
-			cout<<"sending resp:\n" << buf<<'\n';
+//			cout<<"sending resp:\n" << buf<<'\n';
 			conn.write(buf, strlen(buf));
 			conn.handShakeDone = 1;
 

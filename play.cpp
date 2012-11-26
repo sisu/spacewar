@@ -88,7 +88,7 @@ Planet makePlanet() {
 	p.owner = NONE;
 	p.size = 2*(1+2*randf());
 	p.population = rand() % (int)(5*p.size);
-	p.pos = 15.f*(rvec()+Vec3(1,0,0));
+	p.pos = 30.f*rvec();
 	return p;
 }
 void genPlanets(int n) {

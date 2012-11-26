@@ -103,7 +103,7 @@ bool Connection::read()
 		data.append(buf, buf+r);
 		if (!handShakeDone) {
 			buf[r] = 0;
-			cout<<"data: "<<buf<<'\n';
+//			cout<<"data: "<<buf<<'\n';
 		}
 	}
 	return r>0;
@@ -163,7 +163,7 @@ void Connection::write(DataWriter& w)
 void Connection::flush()
 {
 	if (obuf.size()) {
-		cout<<"sending "<<obuf.size()<<" bytes\n";
+//		cout<<"sending "<<obuf.size()<<" bytes\n";
 #if 0
 		#ifdef WIN32
 		int r = send(fd, &obuf[0], obuf.size(), 0);
