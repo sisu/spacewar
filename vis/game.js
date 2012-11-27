@@ -1,4 +1,4 @@
-var GROW_SPEED = 6, MOVE_SPEED = 18;
+var GROW_SPEED = 1, MOVE_SPEED = 18;
 var game = {
 	crafts: [],
 //	pressedKeys: [],
@@ -49,7 +49,7 @@ var game = {
 	growPlanets: function(dt) {
 		for(var i=0; i<this.planets.length; ++i) {
 			var p = this.planets[i];
-			if (p.owner!=0) p.population += dt * GROW_SPEED;
+			if (p.owner!=0) p.population += dt * p.size * GROW_SPEED;
 		}
 	},
 	sendCrafts: function(who, from, to, count) {

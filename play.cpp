@@ -15,7 +15,7 @@ using namespace std;
 vector<Planet> planets;
 vector<Craft> crafts;
 
-const float GROW_SPEED = 6;
+const float GROW_SPEED = 1;
 const float MOVE_SPEED = 18;
 const float MAX_TIME = 30;
 
@@ -43,7 +43,7 @@ void update(float dt) {
 	for(size_t i=0; i<planets.size(); ++i) {
 		Planet& p = planets[i];
 		if (p.owner!=NONE)
-			p.population += GROW_SPEED * dt;
+			p.population += GROW_SPEED * p.size * dt;
 	}
 	for(size_t i=0; i<crafts.size(); ++i) {
 		Craft& c = crafts[i];
