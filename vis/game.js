@@ -1,4 +1,4 @@
-var GROW_SPEED = 3, MOVE_SPEED = 9;
+var GROW_SPEED = 6, MOVE_SPEED = 18;
 var game = {
 	crafts: [],
 //	pressedKeys: [],
