@@ -237,6 +237,10 @@ function init() {
 //	draw();
 //	game.start();
 	console.log("init done");
+
+	if (replay!=undefined) {
+		game.start();
+	}
 }
 
 /*
