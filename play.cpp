@@ -69,7 +69,7 @@ double randf2() {
 Vec3 rvec() {
 	return Vec3(randf2(), randf2(), randf2());
 }
-void sendCrafts(Planet& from, Planet& to, int count) {
+int sendCrafts(Planet& from, Planet& to, int count) {
 	count = max(0, min(count, (int)from.population));
 	for(int i=0; i<count; ++i) {
 		Vec3 pos = from.pos + rvec();
@@ -82,6 +82,7 @@ void sendCrafts(Planet& from, Planet& to, int count) {
 		from.owner = NONE;
 	}
 #endif
+	return count;
 }
 
 Planet makePlanet() {
@@ -176,7 +177,7 @@ void readInput(Process& proc, Player pl) {
 //			cout<<"send "<<pl<<": "<<from<<' '<<to<<' '<<count<<endl;
 			Planet& fromP = planets[from];
 			if (fromP.owner == pl) {
-				sendCrafts(fromP, planets[to], count);
+				count = sendCrafts(fromP, planets[to], count);
 				proc1.send(sendMessage(from, to, count, pl, P1));
 				proc2.send(sendMessage(from, to, count, pl, P2));
 				string msg = sendMessage(from, to, count, pl, P1);
