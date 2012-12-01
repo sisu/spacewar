@@ -5,11 +5,11 @@ function Buffer(target) {
 	this.arrs = [];
 	this.names = [];
 }
-Buffer.prototype.add = function(arr, name) {
-	console.log("adding array "+name+" ; "+arr.BYTES_PER_ELEMENT);
+Buffer.prototype.add = function(arr, name, size) {
+	console.log("adding array "+name+" ; "+size);
 	this.arrs.push(arr);
 	this.names.push(name);
-	this.index.push(this.index.last() + arr.length * arr.BYTES_PER_ELEMENT);
+	this.index.push(this.index.last() + arr.length * size);
 }
 Buffer.prototype.free = function() {
 	gl.deleteBuffer(this.id);

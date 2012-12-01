@@ -192,7 +192,7 @@ function initSocket() {
 	ws.onopen = function(e) { console.log("ws open"); /*ws.send("lol");*/ game.start(); }
 	ws.onclose = function(e) { game.stop(); setTimeout(initSocket, 1000); }
 	ws.onmessage = handleMessage;
-	ws.onerror = function(e) { console.log("ws error"); }
+	ws.onerror = function(e) {}// console.log("ws error"); }
 }
 
 var dragging = false;
@@ -230,7 +230,7 @@ function init() {
 	canvas.onmouseup = function() {dragging =false;};
 	canvas.onmousemove = mouseMove;
 	gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-	assert(gl, 'gl');
+	assert(gl, 'webgl not available');
 //	initDebug();
 	initShaders();
 	makeTextures();

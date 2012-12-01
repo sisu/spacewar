@@ -10,11 +10,11 @@ Model.prototype.bind = function(prog) {
 }
 Model.prototype.load = function() {
 	for(var i in this.vattrs) {
-		this.vbuf.add(this.vattrs[i], i);
+		this.vbuf.add(this.vattrs[i], i, 4);
 	}
 	this.vbuf.load(gl.STATIC_DRAW);
 
-	this.ibuf.add(new Int16Array(this.indices));
+	this.ibuf.add(new Int16Array(this.indices), null, 2);
 	this.ibuf.load(gl.STATIC_DRAW);
 }
 Model.prototype.draw = function() {
