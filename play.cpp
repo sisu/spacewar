@@ -159,6 +159,9 @@ string sendMessage(int from, int to, int count, Player sender, Player pl) {
 	oss<<"SEND "<<fixPl(sender, pl)<<' '<<from<<' '<<to<<' '<<count<<'\n';
 	return oss.str();
 }
+bool isPlanet(int num) {
+	return num>=0 && num<(int)planets.size();
+}
 double curTime;
 void readInput(Process& proc, Player pl) {
 	string s;
@@ -174,15 +177,18 @@ void readInput(Process& proc, Player pl) {
 		} else if (msg=="SEND") {
 			int from, to, count;
 			iss >> from >> to >> count;
+			if (!isPlanet(from) || !isPlanet(to)) continue;
 //			cout<<"send "<<pl<<": "<<from<<' '<<to<<' '<<count<<endl;
 			Planet& fromP = planets[from];
 			if (fromP.owner == pl) {
 				count = sendCrafts(fromP, planets[to], count);
-				proc1.send(sendMessage(from, to, count, pl, P1));
-				proc2.send(sendMessage(from, to, count, pl, P2));
-				string msg = sendMessage(from, to, count, pl, P1);
-				replayOut << curTime<<' ' << msg;
-				sendToObs(msg);
+				if (count) {
+					proc1.send(sendMessage(from, to, count, pl, P1));
+					proc2.send(sendMessage(from, to, count, pl, P2));
+					string msg = sendMessage(from, to, count, pl, P1);
+					replayOut << curTime<<' ' << msg;
+					sendToObs(msg);
+				}
 			}
 		} else {
 			cerr<<"fail "<<msg<<'\n';
