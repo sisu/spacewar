@@ -27,7 +27,7 @@ struct Process {
 			if (!dir.empty()) chdir(dir.c_str());
 			dup2(out[1], STDOUT_FILENO);
 			dup2(in[0], STDIN_FILENO);
-			system(s.c_str());
+			execl(s.c_str(), s.c_str(), 0);
 			perror(name.c_str());
 			abort();
 		}
