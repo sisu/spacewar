@@ -7,6 +7,7 @@
 #include <cstring>
 #include <cassert>
 #include <openssl/sha.h>
+#include <cstdio>
 using namespace std;
 net::ServerSocket server;
 

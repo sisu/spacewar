@@ -1,5 +1,9 @@
-#include "Vector.hpp"
+#ifndef _WIN32
 #include "Process.hpp"
+#else
+#include "ProcessWin.hpp"
+#endif
+#include "Vector.hpp"
 #include "SDL.h"
 #include "draw.hpp"
 #include "server.hpp"
@@ -250,7 +254,9 @@ void runGame() {
 		if (!isReplay) {
 			readInput(proc1, P1);
 			readInput(proc2, P2);
+#ifndef NONET
 			runServer();
+#endif
 		} else {
 			runReplay();
 		}
@@ -288,7 +294,8 @@ void runGame() {
 			sendToObs(statusMessage(P1));
 			lastSend = curTime;
 		}
-		usleep(1000);
+//		usleep(1000);
+		SDL_Delay(1);
 	}
 //	cout<<"quitting\n";
 }
@@ -303,9 +310,10 @@ int main(int argc, char* argv[]) {
 	// At least chrome doesn't seem to close connections properly so ignoring
 	// broken pipe errors seems to be the only way to avoid crashing after
 	// observer has disconnected.
+#ifndef _WIN32
 	signal(SIGPIPE, SIG_IGN);
-
 	signal(SIGTERM, sighandler);
+#endif
 
 	srand(time(0));
 	string replayFile = "game.replay";
@@ -355,7 +363,9 @@ int main(int argc, char* argv[]) {
 		replayOut << planetDesc(P1);
 
 	}
+#ifndef NONET
 	startServer();
+#endif
 	if (!noGraphics)
 		openWindow(800, 600);
 

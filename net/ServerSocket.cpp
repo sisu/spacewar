@@ -101,7 +101,11 @@ void ServerSocket::readSockets() {
 	for(size_t i=0; i<conns.size(); ++i) {
 		while(conns[i]->read());
 //		std::cout<<"errno: "<<errno<<'\n';
+#ifndef _WIN32
 		if (errno!=EAGAIN || fcntl(conns[i]->fd, F_GETFL)<0) {
+#else
+		if (errno!=EAGAIN) {
+#endif
 			delete conns[i];
 			conns[i] = conns.back();
 			conns.pop_back();

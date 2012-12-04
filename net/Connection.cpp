@@ -14,6 +14,7 @@
 
 #include <iostream>
 #include <cassert>
+#include <cstdio>
 using namespace std;
 
 namespace net {
