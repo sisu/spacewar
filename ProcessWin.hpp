@@ -12,6 +12,12 @@ struct Process {
 		init();
 		std::cout<<"starting "<<s<<std::endl;
 
+		size_t pos = s.find_last_of("/\\");
+		std::string dir;
+		if (pos!=std::string::npos) {
+			dir = s.substr(0,pos);
+		}
+
 		LPSTR cmd = &s[0];
 		PROCESS_INFORMATION pi;
 		STARTUPINFO si;
@@ -30,7 +36,7 @@ struct Process {
 				1,
 				0,
 				0,
-				0,
+				dir.c_str(),
 				&si,
 				&pi);
 		assert(ok);
