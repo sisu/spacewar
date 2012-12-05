@@ -10,6 +10,7 @@ struct Process {
 
 	void start(std::string s) {
 		init();
+		std::cout<<"starting "<<s<<std::endl;
 
 		LPSTR cmd = &s[0];
 		PROCESS_INFORMATION pi;
@@ -19,6 +20,7 @@ struct Process {
 		si.cb = sizeof(STARTUPINFO);
 		si.hStdOutput = outw;
 		si.hStdInput = inr;
+		si.hStdError = GetStdHandle(STD_ERROR_HANDLE);
 		si.dwFlags |= STARTF_USESTDHANDLES;
 
 		bool ok = CreateProcess(0,
@@ -36,9 +38,12 @@ struct Process {
 	std::string readLine() {
 		char tmp[1024];
 		while(1) {
-			DWORD c;
-			ReadFile(outr, tmp, sizeof(tmp), &c, 0);
-			if (c<=0) break;
+			DWORD c=0;
+			PeekNamedPipe(outr, 0, 0, 0, &c, 0);
+			if (!c) break;
+			if (c>(DWORD)sizeof(tmp)) c=sizeof(tmp);
+			bool ok = ReadFile(outr, tmp, c, &c, 0);
+			if (c<=0 || !ok) break;
 			buf.append(tmp, tmp+c);
 		}
 		size_t pos = buf.find_first_of('\n');
@@ -49,7 +54,13 @@ struct Process {
 		return res;
 	}
 	void send(std::string s) {
-		WriteFile(inw, &s[0], s.size(), 0, 0);
+//		std::cout<<"sending message "<<s<<std::endl;
+		DWORD c=0;
+		bool ok = WriteFile(inw, &s[0], s.size(), &c, 0);
+		assert(ok);
+		assert(c==(DWORD)s.size());
+		ok = FlushFileBuffers(inw);
+		assert(ok);
 	}
 
 
@@ -59,12 +70,10 @@ private:
 		sa.bInheritHandle = 1;
 		sa.lpSecurityDescriptor = 0;
 
-		makeP(outr, outw);
-		makeP(inr, inw);
-	}
-	void makeP(HANDLE& r, HANDLE& w) {
-		CreatePipe(&r, &w, &sa, 0);
-		SetHandleInformation(r, HANDLE_FLAG_INHERIT, 0);
+		CreatePipe(&outr, &outw, &sa, 0);
+		SetHandleInformation(outr, HANDLE_FLAG_INHERIT, 0);
+		CreatePipe(&inr, &inw, &sa, 0);
+		SetHandleInformation(inw, HANDLE_FLAG_INHERIT, 0);
 	}
 
 	SECURITY_ATTRIBUTES sa;
