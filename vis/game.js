@@ -119,7 +119,6 @@ var game = {
 			var t = parseFloat(line[0]);
 			line.shift();
 			if (t > this.totalTime) break;
-			++this.replayLine;
 			handleSplitted(line);
 		}
 		if (this.replayLine>=this.replayStr.length) game.stop();
