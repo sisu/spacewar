@@ -181,7 +181,7 @@ void readInput(Process& proc, Player pl) {
 		} else if (msg=="SEND") {
 			int from, to, count;
 			iss >> from >> to >> count;
-			if (!isPlanet(from) || !isPlanet(to)) continue;
+			if (!isPlanet(from) || !isPlanet(to) || from==to) continue;
 //			cout<<"send "<<pl<<": "<<from<<' '<<to<<' '<<count<<endl;
 			Planet& fromP = planets[from];
 			if (fromP.owner == pl) {
