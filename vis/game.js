@@ -9,6 +9,7 @@ var game = {
 	totalTime: 0.0,
 	replayStr: null,
 	replayLine: 0,
+	gameSpeed: 1.0,
 
 	init: function() {
 		for(var i=0; i<1; ++i) {
@@ -20,7 +21,7 @@ var game = {
 	update: function() {
 		try {
 			var time = new Date().getTime();
-			var dt = (time-this.prevTime)/1000.;
+			var dt = (time-this.prevTime)/1000. * this.gameSpeed;
 			this.prevTime = time;
 			this.totalTime += dt;
 

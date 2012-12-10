@@ -223,6 +223,8 @@ function init() {
 //		console.log(c.responseText);
 		game.replayStr = c.responseText.split('\n');
 		game.initReplay();
+		var spd = QueryString.speed;
+		if (spd!=undefined) game.gameSpeed=parseFloat(spd);
 	}
 
 	var canvas = document.getElementById('canvas');
